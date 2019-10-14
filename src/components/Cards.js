@@ -30,6 +30,7 @@ const sources = [...memes, ...memes];
 const styles = StyleSheet.create({
   cardsContainer: {
     alignItems: 'center',
+    paddingVertical: 10,
   },
 });
 

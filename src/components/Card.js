@@ -1,16 +1,29 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
+
+const { width } = Dimensions.get('window');
+const cardWidth = (width - 108) / 4;
 
 const styles = StyleSheet.create({
+  container: {
+    borderColor: '#000',
+    borderWidth: 1,
+    margin: 10,
+  },
+
   image: {
-    height: 70,
-    width: 70,
+    height: cardWidth,
+    width: cardWidth,
   },
 });
 
 class Card extends React.Component {
   render() {
-    return <Image source={this.props.source} style={styles.image} />;
+    return (
+      <View style={styles.container}>
+        <Image source={this.props.source} style={styles.image} />
+      </View>
+    );
   }
 }
 
