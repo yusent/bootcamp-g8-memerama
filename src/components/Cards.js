@@ -12,7 +12,7 @@ import meme7 from '../../assets/7.jpg';
 import meme8 from '../../assets/8.jpg';
 import meme9 from '../../assets/9.jpg';
 
-const memes = [
+const sources = [
   meme0,
   meme1,
   meme2,
@@ -25,8 +25,6 @@ const memes = [
   meme9,
 ];
 
-const sources = [...memes, ...memes];
-
 const styles = StyleSheet.create({
   cardsContainer: {
     alignItems: 'center',
@@ -36,7 +34,7 @@ const styles = StyleSheet.create({
 
 class Cards extends React.Component {
   state = {
-    shownCardsIndexes: [],
+    memes: [...sources, ...sources].map(s => ({ shown: false, source: s })),
   };
 
   keyExtractor = (_, index) => String(index);
@@ -44,7 +42,13 @@ class Cards extends React.Component {
   renderCard = ({ index, item }) => {
     const onCardPress = () => {
       this.setState({
-        shownCardsIndexes: [...this.state.shownCardsIndexes, index],
+        memes: this.state.memes.map((meme, i) => {
+          if (index === i) {
+            return { ...meme, shown: true };
+          }
+
+          return meme;
+        }),
       });
     };
 
@@ -52,8 +56,8 @@ class Cards extends React.Component {
       <TouchableWithoutFeedback onPress={onCardPress}>
         <View>
           <Card
-            shown={this.state.shownCardsIndexes.includes(index)}
-            source={item}
+            shown={item.shown}
+            source={item.source}
           />
         </View>
       </TouchableWithoutFeedback>
@@ -64,8 +68,7 @@ class Cards extends React.Component {
     return (
       <FlatList
         contentContainerStyle={styles.cardsContainer}
-        data={sources}
-        extraData={this.state.shownCardsIndexes}
+        data={this.state.memes}
         keyExtractor={this.keyExtractor}
         numColumns={4}
         renderItem={this.renderCard}
