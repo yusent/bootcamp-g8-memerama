@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   },
 });
 
+// Card states
 const CARD_HIDDEN = 0;
 const CARD_SHOWN = 1;
 const CARD_MATCHED = 2;
@@ -48,6 +49,10 @@ class Cards extends React.Component {
 
   renderCard = ({ index, item }) => {
     const onCardPress = () => {
+      if (item.state !== CARD_HIDDEN) {
+        return;
+      }
+
       const { memes } = this.state;
 
       this.setState({
