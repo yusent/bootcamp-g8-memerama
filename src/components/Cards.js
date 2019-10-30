@@ -32,19 +32,28 @@ const styles = StyleSheet.create({
   },
 });
 
+const CARD_HIDDEN = 0;
+const CARD_SHOWN = 1;
+const CARD_MATCHED = 2;
+
 class Cards extends React.Component {
   state = {
-    memes: [...sources, ...sources].map(s => ({ shown: false, source: s })),
+    memes: [...sources, ...sources].map(source => ({
+      source,
+      state: CARD_HIDDEN,
+    })),
   };
 
   keyExtractor = (_, index) => String(index);
 
   renderCard = ({ index, item }) => {
     const onCardPress = () => {
+      const { memes } = this.state;
+
       this.setState({
-        memes: this.state.memes.map((meme, i) => {
+        memes: memes.map((meme, i) => {
           if (index === i) {
-            return { ...meme, shown: true };
+            return { ...meme, state: CARD_SHOWN };
           }
 
           return meme;
@@ -56,7 +65,7 @@ class Cards extends React.Component {
       <TouchableWithoutFeedback onPress={onCardPress}>
         <View>
           <Card
-            shown={item.shown}
+            shown={item.state !== CARD_HIDDEN}
             source={item.source}
           />
         </View>
