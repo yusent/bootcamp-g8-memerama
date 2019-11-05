@@ -32,45 +32,65 @@ const styles = StyleSheet.create({
   },
 });
 
-// Card states
-const CARD_HIDDEN = 0;
-const CARD_SHOWN = 1;
-const CARD_MATCHED = 2;
-
 class Cards extends React.Component {
   state = {
+    matches: sources.reduce((o, key) => ({
+      ...o,
+      [key]: false,
+    }), {}),
+
     memes: [...sources, ...sources].map(source => ({
+      shown: false,
       source,
-      state: CARD_HIDDEN,
     })),
+
+    pressedSource: null,
   };
 
   keyExtractor = (_, index) => String(index);
 
   renderCard = ({ index, item }) => {
     const onCardPress = () => {
-      if (item.state !== CARD_HIDDEN) {
+      const { matches, memes, pressedSource } = this.state;
+
+      if (pressedSource && item.shown || matches[item.source]) {
         return;
       }
 
-      const { memes } = this.state;
+      const newState = {};
 
-      this.setState({
-        memes: memes.map((meme, i) => {
-          if (index === i) {
-            return { ...meme, state: CARD_SHOWN };
-          }
+      if (pressedSource) {
+        if (item.source === pressedSource) {
+          newState.matches = {
+            ...matches,
+            [pressedSource]: true,
+          };
+        }
 
-          return meme;
-        }),
-      });
+        newState.pressedSource = null;
+
+        newState.memes = memes.map((meme, i) => ({
+          ...meme,
+          shown: meme.shown || i === index,
+        }));
+      } else {
+        newState.pressedSource = item.source;
+
+        newState.memes = memes.map((meme, i) => ({
+          ...meme,
+          shown: i === index,
+        }));
+      }
+
+      this.setState(newState);
     };
+
 
     return (
       <TouchableWithoutFeedback onPress={onCardPress}>
         <View>
           <Card
-            shown={item.state !== CARD_HIDDEN}
+            shown={item.shown || this.state.matches[item.source]}
             source={item.source}
           />
         </View>
