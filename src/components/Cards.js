@@ -1,5 +1,6 @@
 import React from 'react';
 import { FlatList, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { shuffle } from '../utils';
 import Card from './Card';
 import meme0 from '../../assets/0.jpg';
 import meme1 from '../../assets/1.jpg';
@@ -39,10 +40,10 @@ class Cards extends React.Component {
       [key]: false,
     }), {}),
 
-    memes: [...sources, ...sources].map(source => ({
+    memes: shuffle([...sources, ...sources].map(source => ({
       shown: false,
       source,
-    })),
+    }))),
 
     pressedSource: null,
   };
