@@ -1,5 +1,11 @@
 import React from 'react';
-import { FlatList, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native';
 import { shuffle } from '../utils';
 import Card from './Card';
 import meme0 from '../../assets/0.jpg';
@@ -49,6 +55,11 @@ class Cards extends React.Component {
   };
 
   keyExtractor = (_, index) => String(index);
+
+  get score() {
+    return Object.values(this.state.matches)
+      .reduce((sum, x) => sum + Number(x));
+  }
 
   renderCard = ({ index, item }) => {
     const onCardPress = () => {
@@ -101,13 +112,19 @@ class Cards extends React.Component {
 
   render() {
     return (
-      <FlatList
-        contentContainerStyle={styles.cardsContainer}
-        data={this.state.memes}
-        keyExtractor={this.keyExtractor}
-        numColumns={4}
-        renderItem={this.renderCard}
-      />
+      <View>
+        <FlatList
+          contentContainerStyle={styles.cardsContainer}
+          data={this.state.memes}
+          keyExtractor={this.keyExtractor}
+          numColumns={4}
+          renderItem={this.renderCard}
+        />
+
+        <Text>
+          {this.score}
+        </Text>
+      </View>
     );
   }
 }
