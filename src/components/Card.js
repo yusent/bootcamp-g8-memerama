@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, Image, StyleSheet, View } from 'react-native';
+import { Animated, Dimensions, StyleSheet, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 108) / 4;
@@ -14,24 +14,31 @@ const styles = StyleSheet.create({
 
   image: {
     height: cardWidth,
-    opacity: 0,
     width: cardWidth,
-  },
-
-  imageShown: {
-    opacity: 1,
   },
 });
 
 class Card extends React.Component {
+  opacity = new Animated.Value(0);
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.shown !== this.props.shown) {
+      Animated.timing(this.opacity, {
+        duration: 100,
+        toValue: Number(this.props.shown),
+        useNativeDriver: true,
+      }).start();
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Image
+        <Animated.Image
           source={this.props.source}
           style={[
             styles.image,
-            this.props.shown && styles.imageShown,
+            { opacity: this.opacity },
           ]}
         />
       </View>
