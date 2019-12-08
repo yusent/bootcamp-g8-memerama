@@ -141,6 +141,10 @@ class Cards extends React.Component {
   };
 
   get resetButton() {
+    if (this.score < sources.length) {
+      return null;
+    }
+
     return (
       <TouchableWithoutFeedback onPress={this.reset}>
         <View style={styles.resetButton}>
