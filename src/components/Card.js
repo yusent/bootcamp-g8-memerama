@@ -21,14 +21,24 @@ const styles = StyleSheet.create({
 class Card extends React.Component {
   opacity = new Animated.Value(0);
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.shown !== this.props.shown) {
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.shown !== this.props.shown) {
+      const sourceChanged = nextProps.source !== this.props.source;
+
       Animated.timing(this.opacity, {
         duration: 100,
-        toValue: Number(this.props.shown),
+        toValue: Number(nextProps.shown),
         useNativeDriver: true,
-      }).start();
+      }).start(() => {
+        if (sourceChanged) {
+           this.forceUpdate();
+        }
+      });
+
+      return false;
     }
+
+    return true;
   }
 
   render() {

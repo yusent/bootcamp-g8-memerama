@@ -32,15 +32,8 @@ const sources = [
   meme9,
 ];
 
-const styles = StyleSheet.create({
-  cardsContainer: {
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-});
-
-class Cards extends React.Component {
-  state = {
+function getNewState() {
+  return {
     matches: sources.reduce((o, key) => ({
       ...o,
       [key]: false,
@@ -53,6 +46,39 @@ class Cards extends React.Component {
 
     pressedSource: null,
   };
+}
+
+const styles = StyleSheet.create({
+  cardsContainer: {
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+
+  resetButton: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: '#00f',
+    borderRadius: 4,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+
+  resetButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+
+  score: {
+    alignSelf: 'center',
+    color: '#aaa',
+    fontSize: 32,
+    fontWeight: 'bold',
+  },
+});
+
+class Cards extends React.Component {
+  state = getNewState();
 
   keyExtractor = (_, index) => String(index);
 
@@ -60,6 +86,10 @@ class Cards extends React.Component {
     return Object.values(this.state.matches)
       .reduce((sum, x) => sum + Number(x));
   }
+
+  reset = () => {
+    this.setState(getNewState());
+  };
 
   renderCard = ({ index, item }) => {
     const onCardPress = () => {
@@ -110,6 +140,18 @@ class Cards extends React.Component {
     );
   };
 
+  get resetButton() {
+    return (
+      <TouchableWithoutFeedback onPress={this.reset}>
+        <View style={styles.resetButton}>
+          <Text style={styles.resetButtonText}>
+            Reset
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  }
+
   render() {
     return (
       <View>
@@ -121,9 +163,11 @@ class Cards extends React.Component {
           renderItem={this.renderCard}
         />
 
-        <Text>
+        <Text style={styles.score}>
           {this.score}
         </Text>
+
+        {this.resetButton}
       </View>
     );
   }
